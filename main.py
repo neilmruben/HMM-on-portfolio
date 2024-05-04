@@ -1,7 +1,7 @@
 import streamlit as st
-from fredapi import Fred
+#from fredapi import Fred
 import pandas as pd
-import yfinance as yf
+#import yfinance as yf
 import plotly.graph_objs as go
 import seaborn as sns
 import numpy as np
@@ -29,7 +29,7 @@ number_of_regimes = st.sidebar.slider("* Number of regimes for the HMM model", 2
 ################################################################# Portfolios
 
 warnings.filterwarnings('ignore')
-fred = Fred(api_key='5fb3300beee792c60ddd65e93a863aa2')  # Get your API key from the FRED website
+# fred = Fred(api_key='5fb3300beee792c60ddd65e93a863aa2')  # Get your API key from the FRED website
 
 # portf1 = yf.download('^GSPC')["Adj Close"]  # S&P 500
 # portf2 = yf.download('TLT')["Adj Close"]  # treasuries : ICE U.S. Treasury 20+ Year Bond Index: Focuses on long-term U.S. Treasury bonds with maturities of 20 years or more.
@@ -96,9 +96,20 @@ st.plotly_chart(fig)
 ############################################################################### Factor and economic indicator 
 
 # Money and credit factors : Rates
-DGS5 = fred.get_series('DGS5', start_date='2003-01-01', end_date='2024-01-01').pct_change().dropna()
-DGS10 = fred.get_series('DGS10', start_date='2023-01-01', end_date='2024-01-01').pct_change().dropna()
-DGS30 = fred.get_series('DGS30', start_date='2023-01-01', end_date='2024-01-01').pct_change().dropna()
+#DGS5 = fred.get_series('DGS5', start_date='2003-01-01', end_date='2024-01-01').pct_change().dropna()
+#DGS10 = fred.get_series('DGS10', start_date='2023-01-01', end_date='2024-01-01').pct_change().dropna()
+#DGS30 = fred.get_series('DGS30', start_date='2023-01-01', end_date='2024-01-01').pct_change().dropna()
+
+DGS5 = pd.read_csv("./data/DGS5.csv")
+DGS10 = pd.read_csv("./data/DGS10.csv")
+DGS30 = pd.read_csv("./data/DGS30.csv")
+DGS5 = DGS5.set_index('Date')
+DGS10 = DGS10.set_index('Date')
+DGS30 = DGS30.set_index('Date')
+DGS5.index = pd.to_datetime(DGS5.index)
+DGS10.index = pd.to_datetime(DGS10.index)
+DGS30.index = pd.to_datetime(DGS30.index)
+
 treasury_rate = pd.concat([DGS5,DGS10,DGS30])
 
 # Market indicators : VIX
@@ -448,7 +459,3 @@ fig = ff.create_annotated_heatmap(
 )
 
 st.plotly_chart(fig)
-
-
-
-
